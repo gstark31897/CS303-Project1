@@ -1,6 +1,8 @@
 #include "term.h"
 
+#include <iostream>
 using namespace std;
+
 
 
 TermException::TermException(string message)
@@ -54,25 +56,39 @@ ostream& operator<<(ostream &out, const Term &term)
 istream& operator>>(istream &in, Term &term)
 {
     char c = in.peek();
-    while (c == ' ' || c == '+')
+    term.m_variable.clear();
+    while (c == ' ' || c == '+' || c == '-')
     {
         in >> c;
         c = in.peek();
     }
     in >> term.m_coefficient;
+    if (c == '-')
+        term.m_coefficient *= -1;
 
     c = in.peek();
-    while (c != '^' && c != ' ' && c != '+' && c != '-' && c != '\0' && c != '\n')
+    while (c != '^' && c != ' ' && c != '+' && c != '-' && c != '\0' && c != '\n' && !in.eof())
     {
         in >> c;
         term.m_variable += c;
         c = in.peek();
     }
 
+    if (term.m_variable.empty())
+    {
+        std::cout << "no variable" << std::endl;
+        term.m_exponent = 0;
+        return in;
+    }
+
     if (c == '^')
     {
         in >> c;
         in >> term.m_exponent;
+    }
+    else
+    {
+        term.m_exponent = 1;
     }
 }
 

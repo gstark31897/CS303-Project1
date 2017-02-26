@@ -1,11 +1,14 @@
 #include <iostream>
 
-#include "term.h"
+#include "polynomial.h"
 
 
 int main()
 {
-    Term a(3, 5, "x");
+    Polynomial poly;
+    std::cin >> poly;
+    std::cout << poly;
+    /*Term a(3, 5, "x");
     Term b(5, 5, "x");
     a += b;
     std::cout << a << '+' << b << std::endl;
@@ -13,6 +16,6 @@ int main()
     Term c = Term();
     std::cin >> c;
 
-    std::cout << c << std::endl;
+    std::cout << c << std::endl;*/
 }
 
