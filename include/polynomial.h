@@ -17,5 +17,7 @@ private:
 
 public:
     Polynomial() {};
+
+    Polynomial& operator+=(const Polynomial &poly);
 };
 #endif

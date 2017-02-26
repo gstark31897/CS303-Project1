@@ -57,13 +57,16 @@ istream& operator>>(istream &in, Term &term)
 {
     char c = in.peek();
     term.m_variable.clear();
+    bool negative = false;
     while (c == ' ' || c == '+' || c == '-')
     {
+        if (c == '-')
+            negative = true;
         in >> c;
         c = in.peek();
     }
     in >> term.m_coefficient;
-    if (c == '-')
+    if (negative)
         term.m_coefficient *= -1;
 
     c = in.peek();
