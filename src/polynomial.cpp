@@ -8,6 +8,12 @@ using namespace std;
 
 ostream& operator<<(ostream &out, const Polynomial &poly)
 {
+    if (poly.m_terms.size() == 0)
+    {
+        out << 0;
+        return out;
+    }
+
     vector<Term>::const_iterator it = poly.m_terms.begin();
     while (true)
     {
@@ -22,7 +28,7 @@ ostream& operator<<(ostream &out, const Polynomial &poly)
         else
             break;
     }
-    out << endl;
+    return out;
 }
 
 
