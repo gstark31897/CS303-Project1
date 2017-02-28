@@ -40,6 +40,7 @@ Term& Term::operator+=(const Term &other)
 
 bool Term::operator<(const Term &other) const
 {
+    // compare the exponents
     return m_exponent < other.getExponent();
 }
 
@@ -47,64 +48,108 @@ bool Term::operator<(const Term &other) const
 
 bool Term::operator>(const Term &other) const
 {
+    // compare the exponents
     return m_exponent > other.getExponent();
+}
+
+
+bool Term::operator==(const Term &other) const
+{
+    // compare the exponents
+    return m_exponent == other.getExponent();
 }
 
 
 ostream& operator<<(ostream &out, const Term &term)
 {
-    if (term.m_coefficient == 0)
+    // don't print anything if we multiply by zero
+    if (term.getCoefficient() == 0)
         return out;
-    out << term.m_coefficient;
-    if (term.m_exponent != 0)
-    {
-        out << term.m_variable;
-        if (term.m_exponent > 0)
-            out << '^' << term.m_exponent;
-    }
+    // print out the coefficient if it is not one
+    if (term.getCoefficient() != 1)
+        // only print out a minus if it's negative one and there's a variable to print
+        if (term.getCoefficient() == -1 && term.getExponent() != 0 && term.getVariable().size() > 0)
+            out << '-';
+        else
+            out << term.getCoefficient();
+    // print out the variable if the exponent is not zero
+    if (term.getExponent() != 0)
+        out << term.getVariable();
+    // print out the exponent if it is not zero or one
+    if (term.getExponent() != 1 && term.getExponent() != 0)
+        out << '^' << term.getExponent();
     return out;
 }
 
 
 istream& operator>>(istream &in, Term &term)
 {
-    char c = in.peek();
-    term.m_variable.clear();
+    char c;
     bool negative = false;
-    while (c == ' ' || c == '+' || c == '-')
+    // read until we find the first coefficient
+    while (true)
     {
-        if (c == '-')
-            negative = true;
-        in >> c;
+        // check the next character
         c = in.peek();
+        // throw an error if we get to the end of the file
+        if (in.eof())
+            throw TermException("No input to read term from");
+        // set negative if we find a minus sign
+        if (c == '-')
+            negative = !negative;
+        // consume the character if it's before the coefficient
+        if (c == ' ' || c == '+' || c == '-')
+            in >> c;
+        // break if it's part of the coefficient
+        else
+            break;
     }
+
+    // read the coefficient
     in >> term.m_coefficient;
+    // we failed to read a number, assume that the coefficient is 1 and move to reading the variable
+    if (in.fail())
+    {
+        term.m_coefficient = 1;
+        in.clear();
+    }
+    // make it negative if we found a minus sign
     if (negative)
         term.m_coefficient *= -1;
 
-    c = in.peek();
-    while (c != '^' && c != ' ' && c != '+' && c != '-' && c != '\0' && c != '\n' && !in.eof())
+    // set the exponent and variable for the term
+    term.m_exponent = 1;
+    term.m_variable.clear();
+    // read the variable component of the term
+    while(true)
     {
-        in >> c;
-        term.m_variable += c;
+        // check the next character
         c = in.peek();
-    }
-
-    if (term.m_variable.empty())
-    {
-        std::cout << "no variable" << std::endl;
-        term.m_exponent = 0;
-        return in;
-    }
-
-    if (c == '^')
-    {
+        // stop if we find eof, this is still valid since we can have just a coefficient with an implied exponent
+        if (in.eof())
+        {
+            if (term.m_variable.size() == 0)
+                term.m_exponent = 0;
+            return in;
+        }
+        // we found the start of another term, return
+        if (c == '-' || c == '+' || c == ' ')
+            return in;
+        // consume the character
         in >> c;
-        in >> term.m_exponent;
+        // we found the carrot, break
+        if (c == '^')
+            break;
+        // add the character to the term's variable section
+        term.m_variable += c;
     }
-    else
-    {
-        term.m_exponent = 1;
-    }
+
+    // read the exponent
+    in >> term.m_exponent;
+    // we failed to read a number, throw an exception
+    if (in.fail())
+        throw TermException("Unexpected character");
+
+    return in;
 }
 

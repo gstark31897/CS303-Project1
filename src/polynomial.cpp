@@ -8,18 +8,22 @@ using namespace std;
 
 ostream& operator<<(ostream &out, const Polynomial &poly)
 {
+    // print a zero if we don't have any terms
     if (poly.m_terms.size() == 0)
     {
         out << 0;
         return out;
     }
-
+    // iterate through all the terms
     list<Term>::const_iterator it = poly.m_terms.begin();
     while (true)
     {
+        // print out the term
         out << *it;
+        // check if there is a next term
         if (++it != poly.m_terms.end())
         {
+            // print a plus sign if there is a next term that is not negative
             if (!it->isNegative())
             {
                 out << '+';
@@ -34,20 +38,19 @@ ostream& operator<<(ostream &out, const Polynomial &poly)
 
 istream& operator>>(istream &in, Polynomial &poly)
 {
-    // Grab a line from the input stream
+    // clear the terms
+    poly.m_terms.clear();
+    // grab a line from the input stream
     string line;
     getline(in, line);
-
-    std::cout << "Got Line: " << line << std::endl;
-
+    // make a stream from the line
     stringstream ss(line);
+    // keep reading terms from it until we get to the end
     Term term;
     while (!ss.eof())
     {
         ss >> term;
-        std::cout << "Got Term: " << term << std::endl;
         poly.addTerm(term);
-        //poly.m_terms.push_back(term);
     }
 }
 
@@ -73,7 +76,6 @@ Polynomial& Polynomial::operator+=(const Polynomial &poly)
         {
             Term temp = Term(0, it->getExponent(), it->getVariable());
             addTerm(temp);
-            //m_terms.push_back(Term(0, it->getExponent(), it->getVariable()));
         }
     }
 
@@ -99,14 +101,26 @@ void Polynomial::addTerm(Term &term)
         m_terms.push_back(term);
         return;
     }
-
-    for (list<Term>::const_iterator it = m_terms.begin(); it != m_terms.end(); ++it)
+    // look for a smaller term
+    for (list<Term>::iterator it = m_terms.begin(); it != m_terms.end(); ++it)
     {
+        // put this term before the smaller one
         if (*it < term)
         {
             m_terms.insert(it, term);
             return;
         }
+        // add if to the existing term if we find duplicate exponents
+        if (*it == term)
+        {
+            *it += term;
+            // remove the term if the two canceled eachother out
+            if (it->getCoefficient() == 0)
+                m_terms.erase(it);
+            return;
+        }
     }
+    // we didn't find any smaller terms, put this one on the end
+    m_terms.push_back(term);
 }
 
