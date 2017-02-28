@@ -1,5 +1,4 @@
 # Project 1
-## CS303
 
 ## Building
 ### CMake
