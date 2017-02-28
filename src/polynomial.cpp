@@ -39,7 +39,7 @@ ostream& operator<<(ostream &out, const Polynomial &poly)
 istream& operator>>(istream &in, Polynomial &poly)
 {
     // clear the terms
-    poly.m_terms.clear();
+    poly.clear();
     // grab a line from the input stream
     string line;
     getline(in, line);
@@ -49,6 +49,7 @@ istream& operator>>(istream &in, Polynomial &poly)
     Term term;
     while (!ss.eof())
     {
+        // add the term to the polynomial
         ss >> term;
         poly += term;
     }

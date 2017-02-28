@@ -38,6 +38,7 @@ public:
     bool operator==(const Term &other) const;
 
     bool isNegative() const { return m_coefficient < 0; };
+    bool isZero() const { return m_coefficient == 0; };
     std::string getVariable() const { return m_variable; };
     int getCoefficient() const { return m_coefficient; };
     int getExponent() const { return m_exponent; };

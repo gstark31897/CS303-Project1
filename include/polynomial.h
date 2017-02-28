@@ -18,6 +18,7 @@ private:
 public:
     Polynomial() {};
 
+    void clear() { m_terms.clear(); };
     void addTerm(const Term &term);
 
     Polynomial& operator+=(const Polynomial &poly);

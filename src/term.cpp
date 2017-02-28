@@ -29,10 +29,13 @@ Term::Term(int coefficient, int exponent, string variable)
 
 Term& Term::operator+=(const Term &other)
 {
-    if (m_variable != other.m_variable && m_exponent != 0 && other.m_exponent != 0)
+    // throw an exception if the variables do not match (and their variables are not zero)
+    if (m_variable != other.getVariable() && m_exponent != 0 && other.getExponent() != 0)
         throw TermException("Term variables do not match");
+    // throw an exception if the exponents do not match
     if (m_exponent != other.m_exponent)
         throw TermException("Term exponents do not match");
+    // add the coefficients
     m_coefficient += other.m_coefficient;
     return *this;
 }
