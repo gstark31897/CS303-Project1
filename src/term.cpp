@@ -56,7 +56,7 @@ bool Term::operator>(const Term &other) const
 bool Term::operator==(const Term &other) const
 {
     // compare the exponents
-    return m_exponent == other.getExponent();
+    return m_exponent == other.getExponent() && m_variable == other.getVariable();
 }
 
 

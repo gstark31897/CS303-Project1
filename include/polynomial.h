@@ -18,9 +18,10 @@ private:
 public:
     Polynomial() {};
 
-    void addTerm(Term &term);
+    void addTerm(const Term &term);
 
     Polynomial& operator+=(const Polynomial &poly);
+    Polynomial& operator+=(const Term &term);
 };
 
 #endif

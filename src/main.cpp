@@ -9,14 +9,16 @@ int main()
 {
     Polynomial poly1;
     Polynomial poly2;
+    Polynomial result;
 
     while (true)
     {
-        cout << "Main Menu (select one)" << endl;
+        cout << "******Main Menu******" << endl;
         cout << "Enter Polynomial 1 (1)" << endl;
         cout << "Enter Polynomial 2 (2)" << endl;
         cout << "Add Polynomials (3)" << endl;
         cout << "Exit (4)" << endl;
+        cout << "Select One (1-4): " << flush;
 
         int choice = -1;
         cin >> choice;
@@ -24,29 +26,40 @@ int main()
         cin.clear();
         cin.ignore(10000, '\n');
 
-        if (choice == 1)
+        switch(choice)
         {
-            cout << "Enter your polynomial: " << endl;
-            cin >> poly1;
-        }
-        else if (choice == 2)
-        {
-            cout << "Enter your second polynomial: ";
-            cin >> poly2;
-        }
-        else if (choice == 3)
-        {
-            Polynomial result = poly1;
+        case 1:
+            try
+            {
+                cout << "Enter your first polynomial: " << flush;
+                cin >> poly1;
+            }
+            catch(TermException e)
+            {
+                cout << "Invalid Polynomial: \"" << e.what() << '"' << endl;
+            }
+            break;
+        case 2:
+            try
+            {
+                cout << "Enter your second polynomial: " << flush;
+                cin >> poly2;
+            }
+            catch(TermException e)
+            {
+                cout << "Invalid Polynomial: \"" << e.what() << '"' << endl;
+            }
+            break;
+        case 3:
+            result = poly1;
             result += poly2;
-            cout << poly1 << " added to " << poly2 << " is " << result << endl;;
-        }
-        else if (choice == 4)
-        {
-            return 0;
-        }
-        else
-        {
+            cout << "Adding: " << poly1 << " added to " << poly2 << " is " << result << endl;
+            break;
+        case 4:
+            return 1;
+        default:
             cout << "Invalid Choice" << endl;
+            break;
         }
     }
 }
