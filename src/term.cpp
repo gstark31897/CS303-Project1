@@ -38,6 +38,19 @@ Term& Term::operator+=(const Term &other)
 }
 
 
+bool Term::operator<(const Term &other) const
+{
+    return m_exponent < other.getExponent();
+}
+
+
+
+bool Term::operator>(const Term &other) const
+{
+    return m_exponent > other.getExponent();
+}
+
+
 ostream& operator<<(ostream &out, const Term &term)
 {
     if (term.m_coefficient == 0)

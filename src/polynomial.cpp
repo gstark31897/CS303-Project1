@@ -14,7 +14,7 @@ ostream& operator<<(ostream &out, const Polynomial &poly)
         return out;
     }
 
-    vector<Term>::const_iterator it = poly.m_terms.begin();
+    list<Term>::const_iterator it = poly.m_terms.begin();
     while (true)
     {
         out << *it;
@@ -46,7 +46,8 @@ istream& operator>>(istream &in, Polynomial &poly)
     {
         ss >> term;
         std::cout << "Got Term: " << term << std::endl;
-        poly.m_terms.push_back(term);
+        poly.addTerm(term);
+        //poly.m_terms.push_back(term);
     }
 }
 
@@ -55,10 +56,10 @@ Polynomial& Polynomial::operator+=(const Polynomial &poly)
 {
     // Iterate through all the terms in the other polynomial
     //     if we don't have a term with the same variable and exponent, then add 0 coefficient term to our own list
-    for (auto it = poly.m_terms.begin(); it != poly.m_terms.end(); ++it)
+    for (list<Term>::const_iterator it = poly.m_terms.begin(); it != poly.m_terms.end(); ++it)
     {
         bool found = false;
-        for (auto it2 = m_terms.begin(); it2 != m_terms.end(); ++it2)
+        for (list<Term>::iterator it2 = m_terms.begin(); it2 != m_terms.end(); ++it2)
         {
             if (it->getExponent() == it2->getExponent() && it->getVariable() == it2->getVariable())
             {
@@ -70,13 +71,15 @@ Polynomial& Polynomial::operator+=(const Polynomial &poly)
         // Add it to our terms if we didn't find one
         if (!found)
         {
-            m_terms.push_back(Term(0, it->getExponent(), it->getVariable()));
+            Term temp = Term(0, it->getExponent(), it->getVariable());
+            addTerm(temp);
+            //m_terms.push_back(Term(0, it->getExponent(), it->getVariable()));
         }
     }
 
-    for (auto it = m_terms.begin(); it != m_terms.end(); ++it)
+    for (list<Term>::iterator it = m_terms.begin(); it != m_terms.end(); ++it)
     {
-        for (auto it2 = poly.m_terms.begin(); it2 != poly.m_terms.end(); ++it2)
+        for (list<Term>::const_iterator it2 = poly.m_terms.begin(); it2 != poly.m_terms.end(); ++it2)
         {
             if (it->getExponent() == it2->getExponent() && it->getVariable() == it2->getVariable())
             {
@@ -86,3 +89,24 @@ Polynomial& Polynomial::operator+=(const Polynomial &poly)
     }
     return *this;
 }
+
+
+void Polynomial::addTerm(Term &term)
+{
+    // Just add the term if we don't have any yet
+    if (m_terms.size() == 0)
+    {
+        m_terms.push_back(term);
+        return;
+    }
+
+    for (list<Term>::const_iterator it = m_terms.begin(); it != m_terms.end(); ++it)
+    {
+        if (*it < term)
+        {
+            m_terms.insert(it, term);
+            return;
+        }
+    }
+}
+

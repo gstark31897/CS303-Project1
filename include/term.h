@@ -33,6 +33,9 @@ public:
 
     Term& operator+=(const Term &other);
 
+    bool operator<(const Term &other) const;
+    bool operator>(const Term &other) const;
+
     bool isNegative() const { return m_coefficient < 0; };
     std::string getVariable() const { return m_variable; };
     int getCoefficient() const { return m_coefficient; };
