@@ -53,6 +53,7 @@ istream& operator>>(istream &in, Polynomial &poly)
         ss >> term;
         poly += term;
     }
+    return in;
 }
 
 
